@@ -1,4 +1,4 @@
-name: currency-rate-check-high-frequency
+name: quote command
 
 on:
   workflow_dispatch:
