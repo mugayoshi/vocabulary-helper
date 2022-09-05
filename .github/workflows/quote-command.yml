@@ -10,7 +10,7 @@ env:
   IS_LOCAL: false
 jobs:
   quote:
-    name: sends a quote with its translation to Slack
+    name: sends a spanish quote to Slack
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

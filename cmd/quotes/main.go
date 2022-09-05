@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/mugayoshi/vocabulary-helper/api/quotes"
-	"github.com/mugayoshi/vocabulary-helper/api/translate"
 	"github.com/mugayoshi/vocabulary-helper/config"
 	"github.com/mugayoshi/vocabulary-helper/webhook"
 )
@@ -19,28 +18,24 @@ func runCommand(f Cmd) {
 }
 
 type QuoteInfo struct {
-	quote       string
-	originator  string
-	translation string
+	quote      string
+	originator string
 }
 
-func translateQuote() QuoteInfo {
+func translateQuote(target string) QuoteInfo {
 	rapidApiKey := config.GetEnvVariable("X_RAPID_API_KEY")
-	quote, originator := quotes.GetQuote(rapidApiKey, "en")
-	translation := translate.Translate(rapidApiKey, quote, "es", "en")
-	fmt.Println(translation)
+	quote, originator := quotes.GetQuote(rapidApiKey, target)
 	return QuoteInfo{
-		quote:       quote,
-		originator:  originator,
-		translation: translation,
+		quote:      quote,
+		originator: originator,
 	}
 
 }
 
 func sendQuoteMessageToSlack() {
-	info := translateQuote()
+	info := translateQuote("es")
 	url := config.GetEnvVariable("SLACK_WEBHOOK_LANG")
-	message := fmt.Sprintf("Quote: %s  by %s, \nTranslation: %s\n", info.quote, info.originator, info.translation)
+	message := fmt.Sprintf("Quote:\n%s\nby %s\n", info.quote, info.originator)
 	webhook.SendMessageToMoneyChannel(url, message)
 }
 
