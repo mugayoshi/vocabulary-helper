@@ -5,16 +5,12 @@ import (
 	"log"
 )
 
-type randomWordResResult struct {
-	Definition string `json:"definition"`
-}
-
 type randomWordRes struct {
-	Word    string                `json:"word"`
-	Results []randomWordResResult `json:"results"`
+	Word string `json:"word"`
 }
 
-func GetRandomWord(apiKey string, isDebug bool) string {
+// writes a random word to a channel
+func GetRandomWord(apiKey string, isDebug bool, c chan<- string) {
 	body := callAPiBase("?random=true", apiKey, isDebug)
 	var result randomWordRes
 	err := json.Unmarshal(body, &result)
@@ -22,5 +18,5 @@ func GetRandomWord(apiKey string, isDebug bool) string {
 	if err != nil {
 		log.Panicln("unmarshal error")
 	}
-	return result.Word
+	c <- result.Word
 }
